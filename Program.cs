@@ -11,6 +11,16 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+//builder.Services.AddCors(option =>
+//{
+//    option.AddPolicy("MyPolicy", builder =>
+//    {
+//        builder.AllowAnyOrigin()
+//        .AllowAnyMethod()
+//        .AllowAnyHeader();
+
+//    });
+//});
 
 builder.Services.AddDbContext<ProductAPIDemoContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ProductAPIDemoContext") ?? throw new InvalidOperationException("Connection string 'ProductAPIDemoContext' not found.")));
@@ -50,7 +60,9 @@ app.UseCors("corspolicy");
 app.UseHttpsRedirection();
 
 app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+//app.UseCors("MyPolicy");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

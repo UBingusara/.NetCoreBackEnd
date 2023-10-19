@@ -91,15 +91,36 @@ namespace ProductAPIDemo.Controllers
         }
 
         [HttpPost("authenticate")]
-        public async Task<IActionResult> Authenticate([FormBody] User userObj)
+        public async Task<IActionResult> Authenticate([FromBody] User userObj)
         {
             if (userObj == null)
                 return BadRequest();
 
-            var user = await _productAPIDemoContext.Users.FirstOrDefaultAsync(x => x.Username == userObj.Username);
+            var user = await _productAPIDemoContext.Users
+                .FirstOrDefaultAsync(x => x.Username == userObj.Username && x.Password == userObj.Password);
             if (user == null)
                 return NotFound(new { Message = "User Not Found"});
+
+            return Ok(new
+            {
+                Message = "login Success!"
+            });
         }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> RegisterUser([FromBody] User userObj)
+        {
+            if (userObj == null)
+                return BadRequest();
+
+            await _productAPIDemoContext.AddAsync(userObj);
+            await _productAPIDemoContext.SaveChangesAsync();
+            return Ok(new
+            { 
+                Message = "User Registered!"
+            });
+        }
+
     }
 
 }
